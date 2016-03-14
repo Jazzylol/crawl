@@ -14,14 +14,16 @@ from .. import items
 
 # 美团爬虫
 class HuoguoSpider(scrapy.Spider):
+
     def __init__(self):
         self.page = 1
 
+    limit_page = 10
     name = "huoguo"
     allowed_domain = ["cd.meituan.com"]
     start_urls = [
         "http://cd.meituan.com/category/huoguo/all/page{}?mtt=1.index%2Fdefault%2Fpoi.0.0.ilp7aqrm".format(str(page))
-        for page in range(10)]
+        for page in range(limit_page)]
 
     def parse(self, response):
         hxs = Selector(response)
