@@ -12,4 +12,6 @@ from scrapy.item import Field
 class MeituanItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    divstr = Field()
+    name=Field()
+    count=Field()
+    addr=Field()
