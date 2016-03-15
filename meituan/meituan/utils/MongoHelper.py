@@ -14,4 +14,4 @@ class MongoHelper(object):
 
     def insert(self, json):
         col = self.client.get_database(self.db).get_collection(self.col)
-        col.insert(json)
+        col.insert_one(eval(json))

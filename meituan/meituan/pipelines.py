@@ -12,29 +12,27 @@ import utils.MongoHelper
 
 
 class MeituanPipeline(object):
-    def __init__(self):
-        self.file = codecs.open("data.txt", encoding='utf-8', mode='wb')
-        self.count = 1
+	def __init__(self):
+		# self.file = codecs.open("data.txt", encoding='utf-8', mode='wb')
+		# self.count = 1
+		self.mongo_client = utils.MongoHelper.MongoHelper()
 
-    def process_item(self, item, spider):
-        line = json.dumps(dict(item)) + '\n'
-        value = line.decode("unicode_escape")
-        try:
-            self.file.write(value)
-        except Exception, e:
-            print e
-        finally:
-            self.file.close()
-        try:
-            count = self.count
-            redis_helper = utils.RedisHelper.RedisHelper()
-            redis_helper.set_obj(count, value)
-            self.count = count + 1
-        except Exception, e:
-            print e
-        try:
-            mongo_client = utils.MongoHelper.MongoHelper()
-            mongo_client.insert(value)
-        except Exception, e:
-            print e
-        return item
+	def process_item(self, item, spider):
+		line = json.dumps(dict(item)) + '\n'
+		value = line.decode("unicode_escape")
+		# try:
+		#     self.file.write(value)
+		# except Exception, e:
+		#     print e
+		# try:
+		#     count = self.count
+		#     redis_helper = utils.RedisHelper.RedisHelper()
+		#     redis_helper.set_obj(count, value)
+		#     self.count = count + 1
+		# except Exception, e:
+		#     print e
+		try:
+			self.mongo_client.insert(value)
+		except Exception, e:
+			print e
+		return item
