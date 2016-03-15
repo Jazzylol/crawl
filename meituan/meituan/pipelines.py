@@ -7,39 +7,34 @@
 import codecs
 import json
 
+import utils.RedisHelper
+import utils.MongoHelper
+
 
 class MeituanPipeline(object):
     def __init__(self):
         self.file = codecs.open("data.txt", encoding='utf-8', mode='wb')
         self.count = 1
 
-    # def process_item(self, item, spider):
-    #     line = json.dumps(dict(item)) + '\n'
-    #     self.file.write(line.decode("unicode_escape"))
-    #     return item
-
     def process_item(self, item, spider):
         line = json.dumps(dict(item)) + '\n'
         value = line.decode("unicode_escape")
-        self.file.write(value)
-        count = self.count
-        redis_client = Database()
-        redis_client.write(count, value)
-        self.count = count + 1
-        return item
-
-
-import redis
-
-
-class Database:
-    def __init__(self):
-        self.host = 'localhost'
-        self.port = 6379
-
-    def write(self, key, val):
         try:
-            r = redis.StrictRedis(host=self.host, port=self.port)
-            r.set(key, val)
-        except Exception, exception:
-            print exception
+            self.file.write(value)
+        except Exception, e:
+            print e
+        finally:
+            self.file.close()
+        try:
+            count = self.count
+            redis_helper = utils.RedisHelper.RedisHelper()
+            redis_helper.set_obj(count, value)
+            self.count = count + 1
+        except Exception, e:
+            print e
+        try:
+            mongo_client = utils.MongoHelper.MongoHelper()
+            mongo_client.insert(value)
+        except Exception, e:
+            print e
+        return item

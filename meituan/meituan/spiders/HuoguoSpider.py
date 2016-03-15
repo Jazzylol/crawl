@@ -14,11 +14,10 @@ from .. import items
 
 # 美团爬虫
 class HuoguoSpider(scrapy.Spider):
-
     def __init__(self):
         self.page = 1
 
-    limit_page = 10
+    limit_page = 1
     name = "huoguo"
     allowed_domain = ["cd.meituan.com"]
     start_urls = [
@@ -68,13 +67,22 @@ class HuoguoSpider(scrapy.Spider):
         html_str = eval(result)['data'].decode("unicode_escape").replace("\/", "/")
         my_select = Selector(text=html_str)
         shop_names = my_select.xpath('//div[@class="poi-tile__info"]/div[1]/a/text()').extract()
+        stars = my_select.xpath('//div[@class="rate"]/span/span/@style').extract()
         counts = my_select.xpath('//div[@class="poi-tile__info"]/div[2]/div[2]/a/span/text()').extract()
+        start_money = my_select.xpath('//div[@class="poi-tile__money"]/a/span/text()').extract()
+        avg_money = my_select.xpath('//div[@class="poi-tile__money"]/span/span/text()').extract()
         addrs = my_select.xpath('//div[@class="poi-tile__info"]/div[2]/div[1]/a[2]/text()').extract()
-        for name, count, addr in zip(shop_names, counts, addrs):
+        links = my_select.xpath('//div[@class="poi-tile__info"]/div[1]/a/@href').extract()
+        for name, star, count, begin_price, avg_price, addr, link in zip(shop_names, stars, counts, start_money,
+                                                                         avg_money, addrs, links):
             item = items.MeituanItem()
             item["name"] = name
+            item["stars"] = star.encode('utf-8').replace('width:', '').decode('utf-8')
             item["count"] = count
+            item["begin_price"] = "¥" + begin_price
+            item["avg_price"] = avg_price
             item["addr"] = addr
+            item["link"] = link
             yield item
 
         count = self.page

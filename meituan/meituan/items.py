@@ -12,6 +12,10 @@ from scrapy.item import Field
 class MeituanItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    name=Field()
-    count=Field()
-    addr=Field()
+    name = Field()
+    count = Field()
+    stars = Field()
+    addr = Field()
+    begin_price = Field()
+    avg_price = Field()
+    link = Field()

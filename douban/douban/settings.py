@@ -11,7 +11,7 @@
 
 BOT_NAME = 'douban'
 
-SPIDER_MODULES = ['douban.spiders']
+SPIDER_MODULES = .douban.spiders']
 NEWSPIDER_MODULE = 'douban.spiders'
 
 ITEM_PIPELINES = {'douban.pipelines.DoubanPipeline': 1}

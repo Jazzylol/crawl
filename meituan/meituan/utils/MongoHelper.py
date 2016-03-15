@@ -1,22 +1,17 @@
-import pymongo
+import pymongo as pymongo
+
+from .. import settings
 
 
 class MongoHelper(object):
-	def __init__(self):
-		# self.server = settings['MONGODB_SERVER']
-		# self.port = settings['MONGODB_PORT']
-		# self.db = settings['MONGODB_DB']
-		# self.col = settings['MONGODB_COLLECTION']
-		self.server = "191.168.1.156"
-		self.port = 27017
-		self.db = "crawl"
-		self.col = "meituan"
-		# connection = pymongo.Connection(self.server, self.port)
-		client = pymongo.MongoClient("192.168.1.156", 27017)
-		db = client['crawl']
-		collection = db['meituan']
-		su = collection.insert({"a": "b"})
-		print su
+    def __init__(self):
+        self.server = settings.MONGODB_SERVER
+        self.port = settings.MONGODB_PORT
+        self.db = settings.MONGODB_DB
+        self.col = settings.MONGODB_COLLECTION
+        # connection = pymongo.Connection(self.server, self.port)
+        self.client = pymongo.MongoClient(self.server, self.port)
 
-
-m = MongoHelper()
+    def insert(self, json):
+        col = self.client.get_database(self.db).get_collection(self.col)
+        col.insert(json)
